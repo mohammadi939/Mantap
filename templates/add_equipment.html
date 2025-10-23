@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}افزودن تجهیز جدید - سیستم مدیریت تعمیرات معدن{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                <i class="fas fa-plus"></i> افزودن تجهیز جدید
+            </h1>
+            <a href="{{ url_for('equipment_list') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-right"></i> بازگشت به لیست
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle"></i> اطلاعات تجهیز
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="name" class="form-label">نام تجهیز <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="model" class="form-label">مدل <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="model" name="model" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="serial_number" class="form-label">شماره سریال <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="serial_number" name="serial_number" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="location" class="form-label">مکان <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="location" name="location" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="status" class="form-label">وضعیت <span class="text-danger">*</span></label>
+                            <select class="form-select" id="status" name="status" required>
+                                {% for status in status_options %}
+                                <option value="{{ status.value }}">{{ status.value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="cost" class="form-label">هزینه (ریال) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="cost" name="cost" step="0.01" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="purchase_date" class="form-label">تاریخ خرید <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="purchase_date" name="purchase_date" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="warranty_expiry" class="form-label">تاریخ انقضای گارانتی</label>
+                            <input type="date" class="form-control" id="warranty_expiry" name="warranty_expiry">
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="maintenance_interval_days" class="form-label">فاصله تعمیرات (روز) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="maintenance_interval_days" name="maintenance_interval_days" value="30" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="last_maintenance" class="form-label">آخرین تعمیر</label>
+                            <input type="date" class="form-control" id="last_maintenance" name="last_maintenance">
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="next_maintenance" class="form-label">تعمیر بعدی</label>
+                            <input type="date" class="form-control" id="next_maintenance" name="next_maintenance">
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> ذخیره تجهیز
+                            </button>
+                            <a href="{{ url_for('equipment_list') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times"></i> انصراف
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-lightbulb"></i> راهنما
+                </h5>
+            </div>
+            <div class="card-body">
+                <h6>نکات مهم:</h6>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success"></i> شماره سریال باید منحصر به فرد باشد</li>
+                    <li><i class="fas fa-check text-success"></i> فاصله تعمیرات بر اساس نوع تجهیز تعیین می‌شود</li>
+                    <li><i class="fas fa-check text-success"></i> تاریخ تعمیر بعدی به صورت خودکار محاسبه می‌شود</li>
+                    <li><i class="fas fa-check text-success"></i> مکان باید دقیق و قابل شناسایی باشد</li>
+                </ul>
+                
+                <h6 class="mt-3">وضعیت‌های تجهیز:</h6>
+                <ul class="list-unstyled">
+                    <li><span class="badge bg-success">فعال</span> - در حال استفاده</li>
+                    <li><span class="badge bg-warning">در حال تعمیر</span> - تحت تعمیر</li>
+                    <li><span class="badge bg-danger">خراب</span> - نیاز به تعمیر فوری</li>
+                    <li><span class="badge bg-secondary">بازنشسته</span> - خارج از سرویس</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// محاسبه خودکار تاریخ تعمیر بعدی
+document.getElementById('last_maintenance').addEventListener('change', function() {
+    const lastMaintenance = new Date(this.value);
+    const intervalDays = parseInt(document.getElementById('maintenance_interval_days').value);
+    
+    if (lastMaintenance && intervalDays) {
+        const nextMaintenance = new Date(lastMaintenance);
+        nextMaintenance.setDate(nextMaintenance.getDate() + intervalDays);
+        
+        const nextMaintenanceInput = document.getElementById('next_maintenance');
+        nextMaintenanceInput.value = nextMaintenance.toISOString().split('T')[0];
+    }
+});
+
+// محاسبه مجدد هنگام تغییر فاصله تعمیرات
+document.getElementById('maintenance_interval_days').addEventListener('change', function() {
+    const lastMaintenanceInput = document.getElementById('last_maintenance');
+    if (lastMaintenanceInput.value) {
+        lastMaintenanceInput.dispatchEvent(new Event('change'));
+    }
+});
+
+// تنظیم تاریخ امروز به عنوان پیش‌فرض
+document.getElementById('purchase_date').value = new Date().toISOString().split('T')[0];
+</script>
+{% endblock %}
