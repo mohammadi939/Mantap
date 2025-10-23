@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block title %}داشبورد - سیستم مدیریت تعمیرات معدن{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">
+            <i class="fas fa-tachometer-alt"></i> داشبورد مدیریت تعمیرات
+        </h1>
+    </div>
+</div>
+
+<!-- آمار کلی -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-number">{{ equipment_status.total_equipment }}</div>
+            <div class="stat-label">کل تجهیزات</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-number">{{ pending_tasks }}</div>
+            <div class="stat-label">کارهای در انتظار</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-number">{{ completed_tasks }}</div>
+            <div class="stat-label">کارهای تکمیل شده</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-number">{{ low_stock_count }}</div>
+            <div class="stat-label">قطعات کم موجود</div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- وضعیت تجهیزات -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-cogs"></i> وضعیت تجهیزات
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="equipmentStatusChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- آمار تعمیرات ماهانه -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-line"></i> آمار تعمیرات ماهانه
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <h3 class="text-primary">{{ monthly_report.total_tasks }}</h3>
+                        <p class="text-muted">کل کارها</p>
+                    </div>
+                    <div class="col-6">
+                        <h3 class="text-success">{{ monthly_report.completed_tasks }}</h3>
+                        <p class="text-muted">تکمیل شده</p>
+                    </div>
+                </div>
+                <div class="row text-center">
+                    <div class="col-6">
+                        <h3 class="text-info">{{ "%.1f"|format(monthly_report.completion_rate) }}%</h3>
+                        <p class="text-muted">نرخ تکمیل</p>
+                    </div>
+                    <div class="col-6">
+                        <h3 class="text-warning">{{ "{:,.0f}".format(monthly_report.total_cost) }}</h3>
+                        <p class="text-muted">هزینه کل (ریال)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- کارهای فوری -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-exclamation-triangle"></i> کارهای فوری
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>تجهیز</th>
+                                <th>نوع کار</th>
+                                <th>اولویت</th>
+                                <th>تکنسین</th>
+                                <th>تاریخ برنامه</th>
+                                <th>عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>حفار اصلی</td>
+                                <td>تعمیر پیشگیرانه</td>
+                                <td><span class="badge bg-warning">متوسط</span></td>
+                                <td>احمد محمدی</td>
+                                <td>1403/01/15</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary">مشاهده</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- دسترسی سریع -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-bolt"></i> دسترسی سریع
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <a href="{{ url_for('add_equipment') }}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-plus"></i> افزودن تجهیز
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <a href="{{ url_for('add_maintenance_task') }}" class="btn btn-outline-success w-100">
+                            <i class="fas fa-wrench"></i> برنامه‌ریزی تعمیرات
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <a href="{{ url_for('add_inventory_item') }}" class="btn btn-outline-info w-100">
+                            <i class="fas fa-box"></i> افزودن قطعه
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <a href="{{ url_for('reports') }}" class="btn btn-outline-warning w-100">
+                            <i class="fas fa-chart-bar"></i> مشاهده گزارش‌ها
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// نمودار وضعیت تجهیزات
+const ctx = document.getElementById('equipmentStatusChart').getContext('2d');
+const equipmentStatusChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: ['فعال', 'در حال تعمیر', 'خراب', 'بازنشسته'],
+        datasets: [{
+            data: [
+                {{ equipment_status.status_breakdown.get('فعال', 0) }},
+                {{ equipment_status.status_breakdown.get('در حال تعمیر', 0) }},
+                {{ equipment_status.status_breakdown.get('خراب', 0) }},
+                {{ equipment_status.status_breakdown.get('بازنشسته', 0) }}
+            ],
+            backgroundColor: [
+                '#28a745',
+                '#ffc107',
+                '#dc3545',
+                '#6c757d'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+</script>
+{% endblock %}
